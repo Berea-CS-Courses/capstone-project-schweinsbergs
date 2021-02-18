@@ -25,7 +25,7 @@ upgrade to this feature would be to filter results.
 ingredient. 
 
 
-##Create a Requirements section with preliminary specifications.
+## Create a Requirements section with preliminary specifications.
 
 * Software must have some sort of input for the users to put their ingredients in. 
 
