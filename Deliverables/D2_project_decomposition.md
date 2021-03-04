@@ -1,4 +1,4 @@
-#Components
+# Components
 
 **Front-end UI**: For the user to input the ingredients, interact with the recipes given, and select a recipe. 
 
@@ -10,7 +10,7 @@
 
 **Back-end Script**: This will need to be run to compare user inputs against the dataframe and fetch recipes. 
 
-#Understanding the Components
+# Understanding the Components
 
 **The components will be running and interacting with each other in roughly this order.**
 1. Webscraping - This is something I personally do before the user even downloads the app. The webscraper needs to run to populate the dataframe. The information that the webscraper pulls will then be placed into...
