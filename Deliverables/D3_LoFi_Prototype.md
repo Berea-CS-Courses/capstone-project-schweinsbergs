@@ -20,7 +20,7 @@ The option for favorite recipes can exist here as well. I would imagine it would
 
 <img src="https://raw.githubusercontent.com/Berea-CS-Courses/capstone-project-schweinsbergs/D3/Deliverables/prototype%20pictures/4%20recipe%20screen.png"/>
 
-This screen contains a return button so that the user can browse other recipes if they want to (IE: they don't like this one.)
+This screen contains a return button so that the user can browse other recipes if they want to (IE: they don't like this one.) It should be inclusive of a favorite and dislike button if that implementation gets added. 
 
 # Data flow // ER graph
 ## Original Prototype
