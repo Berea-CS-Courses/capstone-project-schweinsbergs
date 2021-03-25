@@ -55,6 +55,21 @@ In class: "Try and think of the webscraping and what's done with the information
 
 * Removed and reworked the prioritization section. It's much more detailed and has a better understanding of what I'm doing. 
 
+
+### D3 
+
+__Feedback__ : 
+
+"Your recipe entity could include a 'black-listed' boolean as a property along with its list of ingredients, etc."
+
+"The data flow diagram could use some distinction to what types of data are being transferred from process to process."
+
+"I would put a little more work into the flowchart to create more of an understanding the full concept of your app."
+
+* Updated the data flow chart to try to make it a little more comprehensive and understandable.
+
+* Made a note about the boolean for disliked ingredients. 
+
 # Reflection 
 
 How confident do you feel about your project now that you have created a working proof of concept? 
