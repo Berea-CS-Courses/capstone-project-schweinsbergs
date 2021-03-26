@@ -2,13 +2,26 @@
 
 # Concept Documentation 
 
-What external software or tools are needed to run proof of concept? 
+**What external software or tools are needed to run proof of concept?**
 
-What steps need to be taken to run proof of concept?
+Currently my project is utilizing the pandas library, and a recipe webscraper library. 
 
-What is the current functionality of the proof of concept?
+Otherwise, it's just a script to read a pickle fiel. 
 
-Are there any components of the code or systems you have submitted that you did not create? 
+**What steps need to be taken to run proof of concept?**
+
+It just needs to be run once to save the dataframe, and then to actually open it. 
+
+**What is the current functionality of the proof of concept?**
+
+Pulls a recipe from a recipe website, stores some information from it into a dataframe. That dataframe
+is then saved into a pickle, and then opened from and read. 
+
+**Are there any components of the code or systems you have submitted that you did not create?**
+
+The webscraper:
+https://github.com/hhursev/recipe-scrapers
+
 
 # Updates
 
@@ -70,10 +83,27 @@ __Feedback__ :
 
 * Made a note about the boolean for disliked ingredients. 
 
+# Proof of Concept
+
+<img src="https://i.imgur.com/7Y6tpJk.jpg"/>
+
+This is none too exciting, but it was pretty exciting to me. This is the result of a webscraping that was 
+put into a dataframe. The dataframe was then pickled for storage, and this little screenshot is the 
+result of reading that stored information. :D 
+
 # Reflection 
 
-How confident do you feel about your project now that you have created a working proof of concept? 
+**How confident do you feel about your project now that you have created a working proof of concept?**
 
-Have you faced any significant challenges in the creation of your project so far? 
+I actually feel pretty confident about my project now. Though I haven't worked with MOST of the systems in 
+place for it, I'm finding it's not actually as hard as I anticipated. 
 
-What do you need from instructors/TA to better help you? 
+**Have you faced any significant challenges in the creation of your project so far?** 
+
+Mostly just trying to research, finding what can and can't work for what I'm envisioning. 
+
+**What do you need from instructors/TA to better help you?** 
+
+I don't think I necessarily am in need of anything right now as it stands. Everything, so far, has been straightforward, 
+but that could change when I implement other things like the UI... 
+
