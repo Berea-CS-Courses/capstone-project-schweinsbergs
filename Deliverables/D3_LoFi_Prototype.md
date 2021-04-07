@@ -39,9 +39,11 @@ I realized that I'm going to need to somehow populate it, because it doesn't nec
 that might pull URLs from websites, or something, because this scraper uses URLS. Which can then be put to the dataframe, which will then be saved as the pkl
 and can be accessed by the app.
 
+* There should be a boolean against the check on whether or not a recipe contains a blacklisted ingredient. 
+
 # Data Flow
 
-<img src="https://raw.githubusercontent.com/Berea-CS-Courses/capstone-project-schweinsbergs/D3/Deliverables/prototype%20pictures/data%20flow%20diagram.JPG"/>
+<img src="https://i.imgur.com/jElx7S9.png.JPG"/>
 
 My dataframe includes my ER graph-- I wanted to more or less consider it a black box here, but I wanted to also show there was a relationship between the dataflow and the ER graph. So I just
 tossed it in for good measure.
