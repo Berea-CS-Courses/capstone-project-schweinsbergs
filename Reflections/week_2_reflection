@@ -1,0 +1,38 @@
+#What have you accomplished this week? 
+
+This week, I managed to iterate over the dataframe to pull the recipe information. 
+When I do this, I switch the information in the ingredients column into a list so I can 
+compare. 
+
+Then, I compare that list against the ingredients the user put in. 
+
+The program keeps track of how many matches there are in the list, and then creates a 
+percentage matched for each recipe, and spits out the matches. 
+
+# What challenges or difficulties did you face? If you solved them, how? If not, what have you learned so far? Have you sought help or other resources?
+
+I had problems trying to figure out how to navigate dataframes. I hopped between the 
+Pandas documentation and Stackoverflow to try and figure out how to do what I 
+accomplished this week. 
+
+#What do you plan to accomplish in the following week? (Please list at least 3 concrete "S.M.A.R.T." goals, along with estimated number of hours to complete, or day to complete)
+
+Next week, I want to incorporate a web crawler to supplement my web scraper so I don't 
+have to manually add each URL into the web scraper. I estimate that could take 
+3-4 hours, because I've never messed around with a web crawler and I'm not sure how 
+they work, but they seem pretty straightforward. 
+
+I also want to automatically feed my web scraper with the information FROM the web crawler,
+most likely having the program read from a text file. I imagine this will take 2 or 3 hours 
+to set up, and then it maaay take some time to run depending on how much information I want to put into the 
+scraper itself. 
+
+Lastly, I want to pull the 'extra' words out of my ingredient list. Things like 'cups', 'tsp', etc
+so that I can get more accurate results as a comparison. I can throw them back in for matches so the user can actually 
+KNOW how to create the recipe, but it's throwing a wrench in the comparisons. I expect this 
+could take 4-5 hours? 
+
+# What resources will you use to accomplish your goals for the upcoming week? (please list out the resources)
+
+Youtube, stackoverflow, and documentation for respective libraries (I don't quite know which webcrawler I want to use 
+yet.)
