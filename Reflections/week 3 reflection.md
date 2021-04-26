@@ -32,5 +32,4 @@ be prepared for the week after this one.
 
 # What resources will you use to accomplish your goals for the upcoming week? (please list out the resources)
 
-Youtube, stackoverflow, and documentation for respective libraries (I don't quite know which webcrawler I want to use 
-yet.)
+Youtube, stackoverflow, and documentation for respective libraries.
