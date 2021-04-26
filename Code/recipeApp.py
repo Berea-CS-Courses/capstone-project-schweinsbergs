@@ -27,6 +27,8 @@ class testScrape:
         self.yields = the yields of the recipe
         self.ingredients = the ingredients of the recipe
         self.recipeLoad = loaded pickle file contents
+        self.user_ingredients = the user's inputted ingredients
+        self.instructions = the user's inputted instructions
         """
 
         self.scraper = scraper
@@ -41,48 +43,32 @@ class testScrape:
         self.instructions = instructions
 
 
-
-    def scraping(self):
-        """
-        Scrapes the information from the web scraper.
-        :return:
-        """
-        self.scraper = scrape_me('https://www.allrecipes.com/recipe/274974/lemon-ricotta-cornmeal-waffles/')
-        self.title = self.scraper.title()
-        self.totaltime = self.scraper.total_time()
-        self.yields = self.scraper.yields()
-        self.ingredients = self.scraper.ingredients()
-        self.instructions = self.scraper.instructions()
-
     def dataframe(self):
         """
-        Sets up the data frame?
-        TODO: make all the data lowercase
+        This sets up the dataframe. It opens up the excel sheet that contains all of the recipes URLS, reads it cell
+        by cell, and populates the dataframe with each recipe.
         :return:
         """
 
-
+        # Assigns each column of the data frame with a value.
         self.recipeInfo = {'Title': [self.title],
                            'Total Time': [self.totaltime],
                            'yields': [self.yields],
                            'ingredients': [self.ingredients],
                            'Instructions': [self.instructions]}
 
+        # Actually creates the dataframe based on those values.
+
         self.df = pd.DataFrame(self.recipeInfo, columns=['Title', 'Total Time', 'yields', 'ingredients', 'Instructions'])
-        ### TESTING ###
-        # self.df.insert(1,"Ham for testing", 13, "5 cups") # remember to put in the number of the column
-        # addition = {'Title': 'Tasty Test Ham', 'Total Time': 13, 'yields': "12 cups", 'ingredients':["ham", "cheese"]}
-        # self.df = self.df.append(addition, ignore_index=True)
-        # print(self.df)
-        # https://www.geeksforgeeks.org/how-to-iterate-through-excel-rows-in-python/
-
+        # Now we have an empty dataframe with only titles, so we're going to open up the excel sheet. readurls is what
+        # we use to actually READ the sheets.
         excellsheet = openpyxl.load_workbook("xmlinfo.xlsx")
-
         readurls = excellsheet.active
 
-        for i in range(250, readurls.max_row + 1):
+        # This iterates down the excel sheet and feeds urls to the web scraper. The web scraper then scrapes that url,
+        # and places the data into the dataframe.
+        for i in range(250, readurls.max_row + 1):   # changing the number @ range will change where the program reads
             recipeurls = readurls.cell(row=i, column=1)
-
 
             self.scraper = scrape_me(recipeurls.value)
             self.title = self.scraper.title()
@@ -95,13 +81,9 @@ class testScrape:
                         'ingredients' : self.ingredients, 'Instructions' : self.instructions}
 
             self.df = self.df.append(addition, ignore_index=True)
-            print("Succeeded scrape at row", recipeurls)
+            print("Succeeded scrape at row", recipeurls)  # feedback so I'm not sitting in idle hell
 
         print(self.df)
-
-
-
-
 
 
     def pickle_jar(self):
@@ -133,7 +115,7 @@ class testScrape:
 
         userinput = input("Enter your ingredients separated by a space.")
 
-        self.user_ingredients = userinput.split()
+        self.user_ingredients = userinput.split() # splits each ingredient up
         # print("ingredients:", self.user_ingredients)
 
     def compare_ingredients(self):
@@ -143,23 +125,18 @@ class testScrape:
         :return:
         """
 
-        for ind in self.recipeLoad.index:
-            # print(self.recipeLoad['ingredients'][ind]) # debugging
-            ingredientlist = list(self.recipeLoad['ingredients'][ind])
-            matches = set(ingredientlist) & set(self.user_ingredients)
-            totalMatchLength = len(matches)
-            userLength = len(ingredientlist)
-            percentageMatched = totalMatchLength / userLength
-            if percentageMatched > 0:
+        for ind in self.recipeLoad.index: # for however big the dataframe is:
+            ingredientlist = list(self.recipeLoad['ingredients'][ind])  # the ingredients column is now a list per row
+            matches = set(ingredientlist) & set(self.user_ingredients)  # a match is if it's in user and ingredients
+            totalMatchLength = len(matches) # how many matches we have total
+            userLength = len(ingredientlist) # how many ingredients has the user given?
+            percentageMatched = totalMatchLength / userLength # matches divided by original number is the % matched
+            if percentageMatched > 0: # If the percentage matched is over 0
                 print(self.recipeLoad['Title'][ind])
                 print(list(self.recipeLoad['ingredients'][ind]))
-                print("Percentage matched:", percentageMatched * 100)
-            else:
+                print("Percentage matched:", percentageMatched * 100) # tell me how much it matched by and the recipe
+            else:  # else, you got no food bud
                 print("No match!")
-
-
-
-
 
 
 def main():
@@ -169,8 +146,8 @@ def main():
     """
     test = testScrape('scraper', 'recipeInfo', 'df', 'title', 'totaltime','yields','ingredients', 'recipeLoad',
                       'user_ingredients', 'Instructions')
-    test.scraping()
-    test.dataframe()
+
+    #test.dataframe()  uncomment this if you wanna add more info to the dataframe. on god dont do it otherwise.
     test.pickle_jar()
     test.open_pickle_jar()
     test.user_input()
