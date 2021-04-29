@@ -2,6 +2,7 @@ import pandas as pd # for dataframe
 import pickle # to save dataframe
 from recipe_scrapers import scrape_me # recipe scraper
 import openpyxl # for working with excel files
+import re # for checking strings
 
 # Assistance with the pickle code from:
 # https://www.youtube.com/watch?v=WkIW0YLoQEE&list=PLQVvvaa0QuDc-3szzjeP6N6b0aDrrKyL-&t=507s&ab_channel=sentdex
@@ -41,6 +42,7 @@ class testScrape:
         self.recipeLoad = recipeLoad
         self.user_ingredients = user_ingredients
         self.instructions = instructions
+
 
 
     def dataframe(self):
@@ -105,6 +107,8 @@ class testScrape:
         pickle_in = open('pickleRecipe.pickle', 'rb') # opens the pickle, now rb = read bytes
         self.recipeLoad = pickle.load(pickle_in) # reads pickle file
         # print(self.recipeLoad) # prints it for me to prove it happened lol
+        for ind in self.recipeLoad.index:
+            print((self.recipeLoad['ingredients'][ind]))
 
     def user_input(self):
         """
@@ -118,25 +122,41 @@ class testScrape:
         self.user_ingredients = userinput.split() # splits each ingredient up
         # print("ingredients:", self.user_ingredients)
 
-    def compare_ingredients(self):
+    def compare_ingredients(self, w):
         """
         Compares the dataframe's ingredients list and the user's.
         This might be helpful: https://towardsdatascience.com/dealing-with-list-values-in-pandas-dataframes-a177e534f173
+        https://stackoverflow.com/questions/5319922/python-check-if-word-is-in-a-string
+
+        https://www.guru99.com/python-regular-expressions-complete-tutorial.html
         :return:
         """
 
+        return re.compile(r'\b({0})\b'.format(w), flags=re.IGNORECASE).search
+        # so, from what i understand, this is regex looking for an 'any' match, so like... '12 cups bread' v 'bread'
+        # would find a match of 'bread' between the two.
+        # 'any charcter except a new line, format the letters, ignore the case, and search
+        
+        # for ind in self.recipeLoad.index: # for however big the dataframe is:
+        #     ingredientlist = list(self.recipeLoad['ingredients'][ind])  # the ingredients column is now a list per row
+        #     matches = set(ingredientlist) & set(self.user_ingredients)  # a match is if it's in user and ingredients
+        #     totalMatchLength = len(matches) # how many matches we have total
+        #     userLength = len(ingredientlist) # how many ingredients has the user given?
+        #     percentageMatched = totalMatchLength / userLength # matches divided by original number is the % matched
+        #     if percentageMatched > 0: # If the percentage matched is over 0
+        #         print(self.recipeLoad['Title'][ind])
+        #         print(list(self.recipeLoad['ingredients'][ind]))
+        #         print("Percentage matched:", percentageMatched * 100) # tell me how much it matched by and the recipe
+        #     else:  # else, you got no food bud
+        #         print("No match!")
+
+    def regextest(self):
+        """Testing regex library
+        https://stackoverflow.com/questions/5319922/python-check-if-word-is-in-a-string"""
         for ind in self.recipeLoad.index: # for however big the dataframe is:
-            ingredientlist = list(self.recipeLoad['ingredients'][ind])  # the ingredients column is now a list per row
-            matches = set(ingredientlist) & set(self.user_ingredients)  # a match is if it's in user and ingredients
-            totalMatchLength = len(matches) # how many matches we have total
-            userLength = len(ingredientlist) # how many ingredients has the user given?
-            percentageMatched = totalMatchLength / userLength # matches divided by original number is the % matched
-            if percentageMatched > 0: # If the percentage matched is over 0
-                print(self.recipeLoad['Title'][ind])
-                print(list(self.recipeLoad['ingredients'][ind]))
-                print("Percentage matched:", percentageMatched * 100) # tell me how much it matched by and the recipe
-            else:  # else, you got no food bud
-                print("No match!")
+             ingredientlist = list(self.recipeLoad['ingredients'][ind])  # the ingredients column is now a list per row
+             self.compare_ingredients(self.user_ingredients)(ingredientlist)
+
 
 
 def main():
@@ -148,7 +168,7 @@ def main():
                       'user_ingredients', 'Instructions')
 
     #test.dataframe()  uncomment this if you wanna add more info to the dataframe. on god dont do it otherwise.
-    test.pickle_jar()
+    #test.pickle_jar()
     test.open_pickle_jar()
     test.user_input()
     test.compare_ingredients()
