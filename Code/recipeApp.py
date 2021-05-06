@@ -1,8 +1,9 @@
-import pandas as pd # for dataframe
-import pickle # to save dataframe
-from recipe_scrapers import scrape_me # recipe scraper
-import openpyxl # for working with excel files
-import re # for checking strings
+import pandas as pd  # for dataframe
+import pickle  # to save dataframe
+from recipe_scrapers import scrape_me  # recipe scraper
+import openpyxl  # for working with excel files
+from fuzzywuzzy import fuzz
+import re
 
 # Assistance with the pickle code from:
 # https://www.youtube.com/watch?v=WkIW0YLoQEE&list=PLQVvvaa0QuDc-3szzjeP6N6b0aDrrKyL-&t=507s&ab_channel=sentdex
@@ -43,8 +44,6 @@ class testScrape:
         self.user_ingredients = user_ingredients
         self.instructions = instructions
 
-
-
     def dataframe(self):
         """
         This sets up the dataframe. It opens up the excel sheet that contains all of the recipes URLS, reads it cell
@@ -61,7 +60,8 @@ class testScrape:
 
         # Actually creates the dataframe based on those values.
 
-        self.df = pd.DataFrame(self.recipeInfo, columns=['Title', 'Total Time', 'yields', 'ingredients', 'Instructions'])
+        self.df = pd.DataFrame(self.recipeInfo,
+                               columns=['Title', 'Total Time', 'yields', 'ingredients', 'Instructions'])
         # Now we have an empty dataframe with only titles, so we're going to open up the excel sheet. readurls is what
         # we use to actually READ the sheets.
         excellsheet = openpyxl.load_workbook("xmlinfo.xlsx")
@@ -69,7 +69,7 @@ class testScrape:
 
         # This iterates down the excel sheet and feeds urls to the web scraper. The web scraper then scrapes that url,
         # and places the data into the dataframe.
-        for i in range(250, readurls.max_row + 1):   # changing the number @ range will change where the program reads
+        for i in range(250, readurls.max_row + 1):  # changing the number @ range will change where the program reads
             recipeurls = readurls.cell(row=i, column=1)
 
             self.scraper = scrape_me(recipeurls.value)
@@ -79,14 +79,13 @@ class testScrape:
             self.ingredients = self.scraper.ingredients()
             self.instructions = self.scraper.instructions()
 
-            addition = {'Title': self.title , 'Total Time' : self.totaltime , 'yields' : self.yields,
-                        'ingredients' : self.ingredients, 'Instructions' : self.instructions}
+            addition = {'Title': self.title, 'Total Time': self.totaltime, 'yields': self.yields,
+                        'ingredients': self.ingredients, 'Instructions': self.instructions}
 
             self.df = self.df.append(addition, ignore_index=True)
             print("Succeeded scrape at row", recipeurls)  # feedback so I'm not sitting in idle hell
 
         print(self.df)
-
 
     def pickle_jar(self):
         """
@@ -94,8 +93,8 @@ class testScrape:
         :return:
         """
 
-        pickle_out = open('pickleRecipe.pickle', 'wb') # Creates pickleRecipe.pickle file, wb = write bytes
-        pickle.dump(self.df, pickle_out) # dumps dataframe into pickle_out, the pickle file
+        pickle_out = open('pickleRecipe.pickle', 'wb')  # Creates pickleRecipe.pickle file, wb = write bytes
+        pickle.dump(self.df, pickle_out)  # dumps dataframe into pickle_out, the pickle file
         pickle_out.close()
 
     def open_pickle_jar(self):
@@ -104,11 +103,11 @@ class testScrape:
         :return:
         """
 
-        pickle_in = open('pickleRecipe.pickle', 'rb') # opens the pickle, now rb = read bytes
-        self.recipeLoad = pickle.load(pickle_in) # reads pickle file
+        pickle_in = open('pickleRecipe.pickle', 'rb')  # opens the pickle, now rb = read bytes
+        self.recipeLoad = pickle.load(pickle_in)  # reads pickle file
         # print(self.recipeLoad) # prints it for me to prove it happened lol
-        for ind in self.recipeLoad.index:
-            print((self.recipeLoad['ingredients'][ind]))
+        # for ind in self.recipeLoad.index:
+        #     print((self.recipeLoad['ingredients'][ind]))
 
     def user_input(self):
         """
@@ -119,43 +118,74 @@ class testScrape:
 
         userinput = input("Enter your ingredients separated by a space.")
 
-        self.user_ingredients = userinput.split() # splits each ingredient up
+        self.user_ingredients = userinput.split()  # splits each ingredient up
         # print("ingredients:", self.user_ingredients)
 
-    def compare_ingredients(self, w):
+    def compare_ingredients(self):
         """
         Compares the dataframe's ingredients list and the user's.
         This might be helpful: https://towardsdatascience.com/dealing-with-list-values-in-pandas-dataframes-a177e534f173
-        https://stackoverflow.com/questions/5319922/python-check-if-word-is-in-a-string
 
-        https://www.guru99.com/python-regular-expressions-complete-tutorial.html
+        https://www.datacamp.com/community/tutorials/fuzzy-string-python
+
+        So much thanks to Mario and Jesse! Emely and Kaleb helped, too. :)
         :return:
         """
+        fractionList = []
+        for ind in self.recipeLoad.index:  # for each row of the dataframe:
+           ingredientList = self.recipeLoad['ingredients'][ind] # make each ingredient cell a row
+           matches = []
+           for userWord in self.user_ingredients:
+               matched = False
+               for ingredient in ingredientList:
+                   if userWord.lower() in ingredient.lower():
+                    matched = True
+                    break
+               matches.append(matched)
 
-        return re.compile(r'\b({0})\b'.format(w), flags=re.IGNORECASE).search
-        # so, from what i understand, this is regex looking for an 'any' match, so like... '12 cups bread' v 'bread'
-        # would find a match of 'bread' between the two.
-        # 'any charcter except a new line, format the letters, ignore the case, and search
-        
-        # for ind in self.recipeLoad.index: # for however big the dataframe is:
-        #     ingredientlist = list(self.recipeLoad['ingredients'][ind])  # the ingredients column is now a list per row
-        #     matches = set(ingredientlist) & set(self.user_ingredients)  # a match is if it's in user and ingredients
-        #     totalMatchLength = len(matches) # how many matches we have total
-        #     userLength = len(ingredientlist) # how many ingredients has the user given?
-        #     percentageMatched = totalMatchLength / userLength # matches divided by original number is the % matched
-        #     if percentageMatched > 0: # If the percentage matched is over 0
-        #         print(self.recipeLoad['Title'][ind])
-        #         print(list(self.recipeLoad['ingredients'][ind]))
-        #         print("Percentage matched:", percentageMatched * 100) # tell me how much it matched by and the recipe
-        #     else:  # else, you got no food bud
-        #         print("No match!")
+           fraction = (matches.count(True) / len(ingredientList)) * 100
+           fractionList.append(fraction)
+           #print(self.recipeLoad['Title'][ind],fraction)
+        self.recipeLoad['Percentage'] = fractionList
+        self.recipeLoad.sort_values(by='Percentage', inplace=True)
+        print(self.recipeLoad['Percentage'])
 
-    def regextest(self):
-        """Testing regex library
-        https://stackoverflow.com/questions/5319922/python-check-if-word-is-in-a-string"""
-        for ind in self.recipeLoad.index: # for however big the dataframe is:
-             ingredientlist = list(self.recipeLoad['ingredients'][ind])  # the ingredients column is now a list per row
-             self.compare_ingredients(self.user_ingredients)(ingredientlist)
+           # for ingredient in ingredientList: # For each ingredient in the list,
+           #      for word in ingredient.split(): # Split it up into a word
+           #          for userword in self.user_ingredients: # iterate over the user's list
+           #              #TODO:
+           #              if word.lower() == userword.lower():
+           #                  print("Match!")
+
+
+
+
+
+
+
+
+
+
+
+
+           #matches = fuzz.token_set_ratio(ingredientList,self.user_ingredients)
+
+
+
+
+
+
+
+            #match_list = []
+
+            #print(match_tracker, self.user_ingredients)
+            #calc = len(self.recipeLoad['ingredients'][ind])
+            #finishedcalc = (match_tracker / calc) * 100
+            #if finishedcalc > 60:
+                #print(self.recipeLoad['Title'[ind]])
+
+
+
 
 
 
@@ -164,11 +194,11 @@ def main():
     Currently calls everything so I can test it.
     :return:open('pickleRecipe.pickle', 'wb')
     """
-    test = testScrape('scraper', 'recipeInfo', 'df', 'title', 'totaltime','yields','ingredients', 'recipeLoad',
+    test = testScrape('scraper', 'recipeInfo', 'df', 'title', 'totaltime', 'yields', 'ingredients', 'recipeLoad',
                       'user_ingredients', 'Instructions')
 
-    #test.dataframe()  uncomment this if you wanna add more info to the dataframe. on god dont do it otherwise.
-    #test.pickle_jar()
+    # test.dataframe()  uncomment this if you wanna add more info to the dataframe. on god dont do it otherwise.
+    # test.pickle_jar()
     test.open_pickle_jar()
     test.user_input()
     test.compare_ingredients()
