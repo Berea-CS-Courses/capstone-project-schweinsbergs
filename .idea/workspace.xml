@@ -20,6 +20,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5e6f8f7c-776f-453c-b37c-ee271f9deea2" name="Default Changelist" comment="Updating Issue Branch 1 with the markdown file from d0 instructions">
+      <change afterPath="$PROJECT_DIR$/Reflections/week 6 reflection.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -36,6 +37,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1o7hFNxmV3Q9sPQuhWS8yf2L9zF" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -108,20 +110,5 @@
     <MESSAGE value="Updating branch with d0 instructions" />
     <MESSAGE value="Updating Issue Branch 1 with the markdown file from d0 instructions" />
     <option name="LAST_COMMIT_MESSAGE" value="Updating Issue Branch 1 with the markdown file from d0 instructions" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="702" y="326" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1613417160427">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state x="702" y="326" key="#com.intellij.fileTypes.FileTypeChooser/-1366.252.1366.738/0.0.1920.1050@0.0.1920.1050" timestamp="1613417160427" />
-    <state x="233" y="177" key="SettingsEditor" timestamp="1612647116934">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state x="233" y="177" key="SettingsEditor/-1366.252.1366.738/0.0.1920.1050@-1366.252.1366.738" timestamp="1612647116934" />
-    <state x="461" y="169" key="SettingsEditor/-1366.252.1366.738/0.0.1920.1050@0.0.1920.1050" timestamp="1612646665466" />
-    <state x="552" y="244" key="Vcs.Push.Dialog.v2" timestamp="1612647204393">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state x="552" y="244" key="Vcs.Push.Dialog.v2/-1366.252.1366.738/0.0.1920.1050@0.0.1920.1050" timestamp="1612647204393" />
   </component>
 </project>
