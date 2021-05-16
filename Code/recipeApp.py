@@ -2,11 +2,10 @@ import pandas as pd  # for dataframe
 import pickle  # to save dataframe
 from recipe_scrapers import scrape_me  # recipe scraper
 import openpyxl  # for working with excel files
-import re
-import tkinter as tk
-from tkinter import simpledialog
-from pandasgui import show
-import tabloo
+import tkinter as tk # for user interface
+from tkinter import simpledialog # for user interface
+from pandasgui import show # for showing the dataframe
+
 
 
 # Assistance with the pickle code from:
@@ -23,7 +22,7 @@ class testScrape:
     """
 
     def __init__(self, scraper, recipeInfo, df, title, totaltime, yields, ingredients, recipeLoad, user_ingredients,
-                 instructions):
+                 instructions, link):
         """
         self.scraper = the web scraper
         :param scraper:
@@ -47,6 +46,7 @@ class testScrape:
         self.recipeLoad = recipeLoad
         self.user_ingredients = user_ingredients
         self.instructions = instructions
+        self.url = link
 
     def dataframe(self):
         """
@@ -60,12 +60,13 @@ class testScrape:
                            'Total Time': [self.totaltime],
                            'yields': [self.yields],
                            'ingredients': [self.ingredients],
-                           'Instructions': [self.instructions]}
+                           'Instructions': [self.instructions],
+                           'Link': [self.url]}
 
         # Actually creates the dataframe based on those values.
 
         self.df = pd.DataFrame(self.recipeInfo,
-                               columns=['Title', 'Total Time', 'yields', 'ingredients', 'Instructions'])
+                               columns=['Title', 'Total Time', 'yields', 'ingredients', 'Instructions', 'Link'])
         # Now we have an empty dataframe with only titles, so we're going to open up the excel sheet. readurls is what
         # we use to actually READ the sheets.
         excellsheet = openpyxl.load_workbook("xmlinfo.xlsx")
@@ -73,7 +74,7 @@ class testScrape:
 
         # This iterates down the excel sheet and feeds urls to the web scraper. The web scraper then scrapes that url,
         # and places the data into the dataframe.
-        for i in range(250, readurls.max_row + 1):  # changing the number @ range will change where the program reads
+        for i in range(500, readurls.max_row + 1):  # changing the number @ range will change where the program reads
             recipeurls = readurls.cell(row=i, column=1)
 
             self.scraper = scrape_me(recipeurls.value)
@@ -82,9 +83,10 @@ class testScrape:
             self.yields = self.scraper.yields()
             self.ingredients = self.scraper.ingredients()
             self.instructions = self.scraper.instructions()
+            self.url = self.scraper.links()
 
             addition = {'Title': self.title, 'Total Time': self.totaltime, 'yields': self.yields,
-                        'ingredients': self.ingredients, 'Instructions': self.instructions}
+                        'ingredients': self.ingredients, 'Instructions': self.instructions, 'Link': self.url}
 
             self.df = self.df.append(addition, ignore_index=True)
             print("Succeeded scrape at row", recipeurls)  # feedback so I'm not sitting in idle hell
@@ -109,22 +111,6 @@ class testScrape:
 
         pickle_in = open('pickleRecipe.pickle', 'rb')  # opens the pickle, now rb = read bytes
         self.recipeLoad = pickle.load(pickle_in)  # reads pickle file
-        # print(self.recipeLoad) # prints it for me to prove it happened lol
-        # for ind in self.recipeLoad.index:
-        #     print((self.recipeLoad['ingredients'][ind]))
-
-    # def user_input(self):
-    #     """
-    #     Takes the user input and makes it a list of strings.
-    #     :return:
-    #     """
-    #
-    #     userinput = input("Enter your ingredients separated by a space.")
-    #
-    #     #userinput = self.userentry.get()
-    #
-    #     self.user_ingredients = userinput.split()  # splits each ingredient up
-    #     print("ingredients:", self.user_ingredients)
 
     def compare_ingredients(self):
         """
@@ -134,11 +120,18 @@ class testScrape:
         https://stackoverflow.com/questions/35240528/reverse-dataframes-rows-order-with-pandas
 
         So much thanks to Mario and Jesse! Emely and Kaleb helped, too. :)
+
+        fractionlist is an empty list that holds our percentages later
+        ingredientlist splits up our dataframe cells into a list
+        matches is an empty list that holds our matches
         :return:
         """
+        # For each cell in the ingredients column, and each word in the list of ingredients, split them up into
+        # a list. It's then compared against the user input list-- The break means the user list will stop searching
+        # for that word in the ingredients. Prevents multiple matches for one ingredient.
         fractionList = []
-        for ind in self.recipeLoad.index:  # for each row of the dataframe:
-           ingredientList = self.recipeLoad['ingredients'][ind] # make each ingredient cell a row
+        for ind in self.recipeLoad.index:
+           ingredientList = self.recipeLoad['ingredients'][ind]
            matches = []
            for userWord in self.user_ingredients:
                matched = False
@@ -148,15 +141,16 @@ class testScrape:
                     break
                matches.append(matched)
 
-           fraction = (matches.count(True) / len(ingredientList)) * 100
+           # Calculate the percentage matched here by calculating the length, put that on the dataframe, and reverse it.
+           if matches.count(True) == 0:
+               fraction = 0
+           else:
+            fraction = (matches.count(True) / len(ingredientList)) * 100
            fractionList.append(fraction)
            #print(self.recipeLoad['Title'][ind],fraction)
         self.recipeLoad['Percentage'] = fractionList
         self.recipeLoad.sort_values(by='Percentage', inplace=True)
         reversed_dataframe = self.recipeLoad.iloc[::-1]
-        #print(self.recipeLoad['Percentage'], self.recipeLoad['Title'])
-        #print(reversed_dataframe['Percentage'], reversed_dataframe['Title'])
-        #tabloo.show(reversed_dataframe)
         show(reversed_dataframe)
 
 
@@ -184,15 +178,13 @@ def main():
     :return:open('pickleRecipe.pickle', 'wb')
     """
     test = testScrape('scraper', 'recipeInfo', 'df', 'title', 'totaltime', 'yields', 'ingredients', 'recipeLoad',
-                      'user_ingredients', 'Instructions')
+                      'user_ingredients', 'Instructions', 'Link')
 
-    # test.dataframe() uncomment this if you wanna add more info to the dataframe. or ruin my life. on god dont do it otherwise.
-    # test.pickle_jar()
+    #test.dataframe()
+    #test.pickle_jar()
     test.open_pickle_jar()
     test.user_input_window()
-    #test.user_input()
     test.compare_ingredients()
-    # app = SeaofBTCapp()
-    # app.mainloop()
+
 
 main()
