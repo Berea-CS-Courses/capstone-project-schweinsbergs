@@ -21,14 +21,13 @@ class testScrape:
     The class for scraping and storing recipes into a dataframe, and then pickling them.
     """
 
-    def __init__(self, scraper, recipeInfo, df, title, totaltime, yields, ingredients, recipeLoad, user_ingredients,
+    def __init__(self, scraper, recipeInfo, df, title, yields, ingredients, recipeLoad, user_ingredients,
                  instructions, link):
         """
         self.scraper = the web scraper
         :param scraper:
         self.recipeInfo = data pulled from scraper for data frame
         self.df = data frame
-        self.totaltime = total time to create recipe
         self.yields = the yields of the recipe
         self.ingredients = the ingredients of the recipe
         self.recipeLoad = loaded pickle file contents
@@ -40,7 +39,6 @@ class testScrape:
         self.recipeInfo = recipeInfo
         self.df = df
         self.title = title
-        self.totaltime = totaltime
         self.yields = yields
         self.ingredients = ingredients
         self.recipeLoad = recipeLoad
@@ -57,7 +55,6 @@ class testScrape:
 
         # Assigns each column of the data frame with a value.
         self.recipeInfo = {'Title': [self.title],
-                           'Total Time': [self.totaltime],
                            'yields': [self.yields],
                            'ingredients': [self.ingredients],
                            'Instructions': [self.instructions],
@@ -66,7 +63,7 @@ class testScrape:
         # Actually creates the dataframe based on those values.
 
         self.df = pd.DataFrame(self.recipeInfo,
-                               columns=['Title', 'Total Time', 'yields', 'ingredients', 'Instructions', 'Link'])
+                               columns=['Title', 'yields', 'ingredients', 'Instructions', 'Link'])
         # Now we have an empty dataframe with only titles, so we're going to open up the excel sheet. readurls is what
         # we use to actually READ the sheets.
         excellsheet = openpyxl.load_workbook("xmlinfo.xlsx")
@@ -74,18 +71,17 @@ class testScrape:
 
         # This iterates down the excel sheet and feeds urls to the web scraper. The web scraper then scrapes that url,
         # and places the data into the dataframe.
-        for i in range(500, readurls.max_row + 1):  # changing the number @ range will change where the program reads
+        for i in range(1, readurls.max_row + 1):  # changing the number @ range will change where the program reads
             recipeurls = readurls.cell(row=i, column=1)
 
             self.scraper = scrape_me(recipeurls.value)
             self.title = self.scraper.title()
-            self.totaltime = self.scraper.total_time()
             self.yields = self.scraper.yields()
             self.ingredients = self.scraper.ingredients()
             self.instructions = self.scraper.instructions()
-            self.url = self.scraper.links()
+            self.url = recipeurls.value
 
-            addition = {'Title': self.title, 'Total Time': self.totaltime, 'yields': self.yields,
+            addition = {'Title': self.title, 'yields': self.yields,
                         'ingredients': self.ingredients, 'Instructions': self.instructions, 'Link': self.url}
 
             self.df = self.df.append(addition, ignore_index=True)
@@ -124,12 +120,14 @@ class testScrape:
         fractionlist is an empty list that holds our percentages later
         ingredientlist splits up our dataframe cells into a list
         matches is an empty list that holds our matches
+        specficmatches is the user's matches
         :return:
         """
         # For each cell in the ingredients column, and each word in the list of ingredients, split them up into
         # a list. It's then compared against the user input list-- The break means the user list will stop searching
         # for that word in the ingredients. Prevents multiple matches for one ingredient.
         fractionList = []
+        # specficmatches = []
         for ind in self.recipeLoad.index:
            ingredientList = self.recipeLoad['ingredients'][ind]
            matches = []
@@ -140,6 +138,11 @@ class testScrape:
                     matched = True
                     break
                matches.append(matched)
+               # specficmatches.append(userWord.lower())
+               #self.recipeLoad['Matches'] = specficmatches
+               # print(specficmatches)
+
+
 
            # Calculate the percentage matched here by calculating the length, put that on the dataframe, and reverse it.
            if matches.count(True) == 0:
@@ -177,7 +180,7 @@ def main():
     Currently calls everything so I can test it.
     :return:open('pickleRecipe.pickle', 'wb')
     """
-    test = testScrape('scraper', 'recipeInfo', 'df', 'title', 'totaltime', 'yields', 'ingredients', 'recipeLoad',
+    test = testScrape('scraper', 'recipeInfo', 'df', 'title', 'yields', 'ingredients', 'recipeLoad',
                       'user_ingredients', 'Instructions', 'Link')
 
     #test.dataframe()
