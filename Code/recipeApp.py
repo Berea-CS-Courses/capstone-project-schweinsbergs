@@ -116,6 +116,7 @@ class testScrape:
         help from: https://stackoverflow.com/questions/35240528/reverse-dataframes-rows-order-with-pandas
 
         So much thanks to Mario and Jesse! Emely and Kaleb helped, too. :)
+        Matches help from Ezra and Conner! Thank you!
 
         fractionlist is an empty list that holds our percentages later
         ingredientlist splits up our dataframe cells into a list
@@ -127,20 +128,21 @@ class testScrape:
         # a list. It's then compared against the user input list-- The break means the user list will stop searching
         # for that word in the ingredients. Prevents multiple matches for one ingredient.
         fractionList = []
-        # specficmatches = []
+        specificmatchesarray = []
         for ind in self.recipeLoad.index:
            ingredientList = self.recipeLoad['ingredients'][ind]
            matches = []
+           specficmatches = []
            for userWord in self.user_ingredients:
                matched = False
                for ingredient in ingredientList:
                    if userWord.lower() in ingredient.lower():
                     matched = True
+                    specficmatches.append(userWord.lower())
                     break
                matches.append(matched)
-               # specficmatches.append(userWord.lower())
-               #self.recipeLoad['Matches'] = specficmatches
-               # print(specficmatches)
+               specificmatchesarray.append(specficmatches)
+
 
 
 
@@ -152,6 +154,7 @@ class testScrape:
            fractionList.append(fraction)
            #print(self.recipeLoad['Title'][ind],fraction)
         self.recipeLoad['Percentage'] = fractionList
+        self.recipeLoad['Matches'] = specificmatchesarray
         self.recipeLoad.sort_values(by='Percentage', inplace=True)
         reversed_dataframe = self.recipeLoad.iloc[::-1]
         show(reversed_dataframe)
