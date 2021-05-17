@@ -111,9 +111,9 @@ class testScrape:
     def compare_ingredients(self):
         """
         Compares the dataframe's ingredients list and the user's.
-        This might be helpful: https://towardsdatascience.com/dealing-with-list-values-in-pandas-dataframes-a177e534f173
+        help from: https://towardsdatascience.com/dealing-with-list-values-in-pandas-dataframes-a177e534f173
 
-        https://stackoverflow.com/questions/35240528/reverse-dataframes-rows-order-with-pandas
+        help from: https://stackoverflow.com/questions/35240528/reverse-dataframes-rows-order-with-pandas
 
         So much thanks to Mario and Jesse! Emely and Kaleb helped, too. :)
 
