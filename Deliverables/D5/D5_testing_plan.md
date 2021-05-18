@@ -131,3 +131,89 @@ things that they didn't know about.
 
 Hopefully these tests help my design be more user-friendly for people to navigate. I'm particularly 
 pleased with getting rid of the vegan options for now, because they were a little strange. 
+
+------------------------------------
+#End to End Testing
+
+###**Testing Requirements** 
+
+The back end: 
+
+The xml scraper has to pull urls and put them into an excel sheet. 
+
+The excel sheet has to be successfully read by my recipe scraper and save that data into a dataframe.
+
+The dataframe must be able to be saved. 
+
+The dataframe must be able to be opened. 
+
+The user end: 
+
+The program must be able to accept user input. 
+
+The program must be able to compare that user input against the open dataframe. 
+
+The program must be able to calculate a percentage matched. 
+
+The program must be able to display these matches. 
+
+All of these things have to happen as a step by step process, and if one thing malfunctions, the entire
+program can't really function. It won't scrape the internet every time it runs, but it must be able to 
+get to the point where the dataframe is able to be saved. 
+
+###**Testing Scraping** 
+
+Scenarios: I wanted to scrape websites that aren't vegan, because the user is going to want options that 
+are not vegan. 
+
+Results: 
+Upon scraping different websites, I encountered 2 errors. One of which was a NoneType, which would cause
+the program to stop scraping and then render the rest of the process like saving, and then everything that
+occurs after saving, unable to work. High priority, and I'll keep scraping websites to find a correlation.
+Sometimes if the scraper is missing some information from a website, it'll just stop, so I imagine that's what's
+happening. 
+
+The other error I encountered was a little trickier than the previous. My program will only scrape around
+350 recipes successfully, and then it'll just quit. Not error out, it'll give me an exit code and pretty 
+much say 'I'm done'. I've done some research on this exit: -1073741571 (0xC00000FD), which apparently just...
+can be anything from memory issues, to my version of python and pycharm... I've listed this one as low
+priority, because it's bizarre and time consuming. I have enough recipes to successfully test and share 
+with, so I'm going to focus on those. 
+
+###**Testing User Input** 
+
+Scenario: I wanted to pretend that I was a user in multiple different mindsets. One was to use the 
+product as it was intended. I would enter reasonable ingredients, such as 'sugar', 'water', 'milk', and I would 
+get reasonable outputs. 
+
+The problems arose when I stress tested the system and wanted to cause as much chaos as possible, because 
+the user can input anything they want. Ezra helped me with this in the user testing, because Ezra 
+really likes to break things. 
+
+Division by 0 error: If there are no matches or input, the system is forced to divide by 0 and it just
+won't run. This is high priority, the program needs to run. (Entering nothing) I'll create a case for if it catches a 0. 
+
+Over 100% matches: If the user puts in something that would match multiple times in one instance of 
+the recipe list, it'll certainly do that. You're able to get matches over 100% in the dataframe. Unfortunately, 
+this isn't all that useful to the user. This is mid-priority-- While it needs fixed, it's still functional. (Entering
+something like 'cup cup 1 cup 1111 7 the number seven') Depending on whether this ends up being trivial or not, I'll 
+check the user's data against stopwords. Otherwise, I'll add a quick fix where I can just display '100%'
+
+Too many matches results in an error: This started happening after implementing the matches column. If there
+are too many matches, the program will not run. Unfortunately, I don't believe I have enough time to 
+actually fix this one, though it would be high-priority if I did. For now, the soft-fix is going to be 
+to not display the matches column just to make sure it works. (Caused by inputting something like 'cup tablespoon
+1 2 3 4 cup tablespoon teaspoon table spoon') I might try to do a shallow copy, but this would need to be fixed by 
+refactoring code, which may be impossible right now. 
+
+Previous bugs, found during informal end-to-end testing, that have since been fixed: 
+
+Adding the web crawler/excel sheet xml: When I was working with my scraper, I realized that the 
+scraper couldn't actually do webcrawling. This was fixed by utilizing sitemaps. 
+
+Reading user data and comparing: I found if I didn't have exact, perfect word for word matches with the 
+dataframe and user ingredients, there would be no match. This made the system just unusable unless 
+you knew the recipe you were looking for, word for word. This was fixed by splitting words apart 
+in the list of strings for both the user ingredients and the recipe's ingredients. 
+
+
