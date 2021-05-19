@@ -128,7 +128,7 @@ class testScrape:
         # a list. It's then compared against the user input list-- The break means the user list will stop searching
         # for that word in the ingredients. Prevents multiple matches for one ingredient.
         fractionList = []
-        #specificmatchesarray = []
+        specificmatchesarray = []
         for ind in self.recipeLoad.index:
            ingredientList = self.recipeLoad['ingredients'][ind]
            matches = []
@@ -138,7 +138,7 @@ class testScrape:
                for ingredient in ingredientList:
                    if userWord.lower() in ingredient.lower():
                     matched = True
-                    specficmatches.append(userWord.lower())
+                    #specficmatches.append(userWord.lower())
                     break
                matches.append(matched)
                #specificmatchesarray.append(specficmatches)
@@ -156,13 +156,11 @@ class testScrape:
                fraction = 100
            fractionList.append(fraction)
            #print(self.recipeLoad['Title'][ind],fraction)
-        self.recipeLoad['Percentage'] = fractionList
+        self.recipeLoad['Percentage Matched'] = fractionList
         #self.recipeLoad['Matches'] = specificmatchesarray
-        self.recipeLoad.sort_values(by='Percentage', inplace=True)
+        self.recipeLoad.sort_values(by='Percentage Matched', inplace=True)
         reversed_dataframe = self.recipeLoad.iloc[::-1]
         show(reversed_dataframe)
-
-
 
     def user_input_window(self):
         """
@@ -177,8 +175,6 @@ class testScrape:
 
         self.user_ingredients = self.entry.split()
         #print(self.user_ingredients)
-
-
 
 
 def main():
